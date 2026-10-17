@@ -75,7 +75,7 @@ export function DSProvider({ children }: { children: ReactNode }) {
         setState((s) => ({ ...s, components: s.components.map((x) => (x.id === c.id ? c : x)) })),
       publishRelease: (note) => {
         const last = state.releases[0];
-        const [maj, min] = (last?.version ?? "0.0.0").split(".").map(Number);
+        const [maj = 0, min = 0] = (last?.version ?? "0.0.0").split(".").map(Number);
         const rel: Release = {
           version: `${maj}.${min + 1}.0`,
           date: new Date().toISOString(),

@@ -12,7 +12,7 @@ export interface Token {
   path: string; // e.g. color.primitive.blue.500
   type: TokenType;
   value: string; // raw value or alias "{other.path}"
-  description?: string;
+  description?: string | undefined;
 }
 
 export interface ResolvedToken extends Token {
@@ -91,7 +91,7 @@ export function resolveTokens(tokens: Token[]): ResolvedToken[] {
 }
 
 export function groupOf(path: string) {
-  return path.split(".")[0];
+  return path.split(".")[0] ?? path;
 }
 
 const kebab = (p: string) => p.replace(/\./g, "-").replace(/[^a-zA-Z0-9-]/g, "-");

@@ -42,9 +42,9 @@ function TokensPage() {
   const save = () => {
     if (!editing) return;
     const t = editing.token;
-    if (!/^[\w-]+(\.[\w-]+)+$/.test(t.path)) return toast.error("Path must look like group.name");
-    if (!t.value.trim()) return toast.error("Value is required");
-    if (editing.original !== t.path && tokens.some((x) => x.path === t.path)) return toast.error("That path already exists");
+    if (!/^[\w-]+(\.[\w-]+)+$/.test(t.path)) { toast.error("Path must look like group.name"); return; }
+    if (!t.value.trim()) { toast.error("Value is required"); return; }
+    if (editing.original !== t.path && tokens.some((x) => x.path === t.path)) { toast.error("That path already exists"); return; }
     upsertToken(t, editing.original);
     setEditing(null);
     toast.success("Token saved");
@@ -53,7 +53,7 @@ function TokensPage() {
   const doImport = (mode: "merge" | "replace") => {
     try {
       const parsed = parseDTCG(JSON.parse(importText));
-      if (!parsed.length) return toast.error("No tokens found in that JSON");
+      if (!parsed.length) { toast.error("No tokens found in that JSON"); return; }
       if (mode === "replace") replaceTokens(parsed);
       else {
         const map = new Map(tokens.map((t) => [t.path, t]));
