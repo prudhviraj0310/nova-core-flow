@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Swatch } from "@/components/AppShell";
 import { useDS } from "@/lib/ds/store";
 import { groupOf } from "@/lib/ds/engine";
-import { ComponentPreview } from "./components";
+import { ComponentPreview } from "@/components/ComponentPreview";
 
 export const Route = createFileRoute("/docs")({
   head: () => ({
