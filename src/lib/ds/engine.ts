@@ -58,7 +58,7 @@ export function toDTCG(tokens: Token[]) {
     const parts = t.path.split(".");
     let cur = root;
     parts.slice(0, -1).forEach((p) => (cur = cur[p] ??= {}));
-    cur[parts[parts.length - 1]] = {
+    cur[parts[parts.length - 1]!] = {
       $type: t.type,
       $value: t.value,
       ...(t.description ? { $description: t.description } : {}),
@@ -74,7 +74,7 @@ export function resolveTokens(tokens: Token[]): ResolvedToken[] {
     const seen = new Set<string>([t.path]);
     let cur = t.value.trim();
     while (isAlias(cur)) {
-      const ref = cur.match(ALIAS_RE)![1];
+      const ref = cur.match(ALIAS_RE)![1]!;
       if (seen.has(ref)) return { value: null, error: `Circular reference via ${ref}` };
       const next = map.get(ref);
       if (!next) return { value: null, error: `Unknown token ${ref}` };
@@ -86,7 +86,7 @@ export function resolveTokens(tokens: Token[]): ResolvedToken[] {
   return tokens.map((t) => {
     const r = resolveOne(t);
     const m = t.value.trim().match(ALIAS_RE);
-    return { ...t, resolved: r.value, aliasOf: m ? m[1] : null, error: r.error };
+    return { ...t, resolved: r.value, aliasOf: m ? m[1]! : null, ...(r.error ? { error: r.error } : {}) };
   });
 }
 
@@ -126,7 +126,7 @@ const twPrefix: Record<TokenType, string> = {
 function hexToRgba(hex: string) {
   const h = hex.replace("#", "");
   const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h.padEnd(8, "f");
-  const [r, g, b, a] = [0, 2, 4, 6].map((i) => parseInt(full.slice(i, i + 2), 16) / 255);
+  const [r = 0, g = 0, b = 0, a = 1] = [0, 2, 4, 6].map((i) => parseInt(full.slice(i, i + 2), 16) / 255);
   return { r, g, b, a };
 }
 
@@ -185,11 +185,11 @@ export function auditCode(code: string, tokens: Token[]) {
   code.split("\n").forEach((ln, i) => {
     for (const m of ln.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) {
       const hit = resolved.find((t) => t.type === "color" && t.resolved?.toLowerCase() === m[0].toLowerCase());
-      issues.push({ line: i + 1, match: m[0], message: "Hardcoded color", suggestion: hit?.path });
+      issues.push({ line: i + 1, match: m[0], message: "Hardcoded color", ...(hit ? { suggestion: hit.path } : {}) });
     }
     for (const m of ln.matchAll(/\b\d+px\b/g)) {
       const hit = resolved.find((t) => t.type === "dimension" && t.resolved === m[0]);
-      issues.push({ line: i + 1, match: m[0], message: "Hardcoded spacing", suggestion: hit?.path });
+      issues.push({ line: i + 1, match: m[0], message: "Hardcoded spacing", ...(hit ? { suggestion: hit.path } : {}) });
     }
   });
   return issues;

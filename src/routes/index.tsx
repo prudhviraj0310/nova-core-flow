@@ -104,11 +104,11 @@ function Overview() {
           </ul>
         </section>
 
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-card p-6 text-primary-foreground shadow-lg">
+        <section className="relative flex flex-col overflow-hidden rounded-3xl bg-gradient-card p-6 text-primary-foreground shadow-lg">
           <p className="text-sm font-medium text-primary">Pipelines</p>
-          <p className="mt-10 text-2xl font-semibold">{EXPORT_TARGETS.length} targets</p>
+          <p className="mt-auto pt-10 text-2xl font-semibold">{EXPORT_TARGETS.length} targets</p>
           <p className="text-sm opacity-90">CSS · Tailwind · TS · Swift · Kotlin · JSON</p>
-          <Link to="/export" className="mt-4 inline-block rounded-full bg-card px-4 py-1.5 text-sm text-foreground">Generate code</Link>
+          <Link to="/export" className="mt-4 self-start rounded-full bg-card px-4 py-1.5 text-sm text-foreground">Generate code</Link>
         </section>
 
         {errors.length > 0 && (
